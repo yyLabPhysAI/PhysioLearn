@@ -42,7 +42,7 @@ jobs:
           export MAMBA_ROOT_PREFIX=~/micromamba
           export MAMBA_EXE=$(pwd)/micromamba
           . $MAMBA_ROOT_PREFIX/etc/profile.d/mamba.sh
-          micromamba activate epilepsy
+          micromamba activate phys
           pre-commit run -a
         env:
           SKIP: no-commit-to-branch
@@ -52,5 +52,5 @@ jobs:
           export MAMBA_ROOT_PREFIX=~/micromamba
           export MAMBA_EXE=$(pwd)/micromamba
           . $MAMBA_ROOT_PREFIX/etc/profile.d/mamba.sh
-          micromamba activate epilepsy
+          micromamba activate phys
           pytest -n 2
