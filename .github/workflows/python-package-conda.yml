@@ -1,0 +1,56 @@
+name: Python Package using Conda
+
+on: [push]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+    steps:
+      - uses: actions/checkout@v2
+      - name: install micromamba
+        run: |
+          wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj bin/micromamba --strip-components=1
+          ./micromamba shell init -s bash -p ~/micromamba
+          mkdir -p ~/micromamba/pkgs/
+      - name: Cache env
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/micromamba/pkgs/
+            ~/.cache/pre-commit/
+          key: env-${{ hashFiles('environment.yaml') }}-${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: install deps
+        shell: bash -l {0}
+        run: |
+          export MAMBA_ROOT_PREFIX=~/micromamba
+          export MAMBA_EXE=$(pwd)/micromamba
+          . $MAMBA_ROOT_PREFIX/etc/profile.d/mamba.sh
+          ./micromamba create -f environment.yaml -y
+      - name: Install packadge
+        shell: bash -l {0}
+        run: |
+          export MAMBA_ROOT_PREFIX=~/micromamba
+          export MAMBA_EXE=$(pwd)/micromamba
+          . $MAMBA_ROOT_PREFIX/etc/profile.d/mamba.sh
+          micromamba activate phys
+          python setup.py develop
+      - name: Pre-commit hooks
+        shell: bash -l {0}
+        run: |
+          export MAMBA_ROOT_PREFIX=~/micromamba
+          export MAMBA_EXE=$(pwd)/micromamba
+          . $MAMBA_ROOT_PREFIX/etc/profile.d/mamba.sh
+          micromamba activate epilepsy
+          pre-commit run -a
+        env:
+          SKIP: no-commit-to-branch
+      - name: Test with pytest
+        shell: bash -l {0}
+        run: |
+          export MAMBA_ROOT_PREFIX=~/micromamba
+          export MAMBA_EXE=$(pwd)/micromamba
+          . $MAMBA_ROOT_PREFIX/etc/profile.d/mamba.sh
+          micromamba activate epilepsy
+          pytest -n 2

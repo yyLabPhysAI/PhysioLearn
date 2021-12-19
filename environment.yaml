@@ -1,0 +1,31 @@
+name: phys
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+dependencies:
+  - python>=3.6
+  - pip
+  - numpy
+  - scipy
+  - ipython
+  - tqdm
+  - freetype<2.11
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - pytorch>=1.7
+  - h5py
+  #- pip:
+     # add here only pip-packages that are not available in conda/conda-forge! E.g.:
+
+# Development dependencies
+  - pytest
+  - pytest-cov
+  - pytest-xdist
+  - tox
+  - pre_commit
+
+# Docs dependencies
+  - sphinx
+  - recommonmark
