@@ -2,4 +2,4 @@
 Contributors
 ============
 
-* Noam Keidar <noam@sibylla.io>
+* Noam Keidar <noamkeidar@campus.technion.ac.il>
