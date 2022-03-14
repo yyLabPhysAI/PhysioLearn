@@ -26,8 +26,8 @@ import sys
 
 from physlearn import __version__
 
-__author__ = "Noam Keidar"
-__copyright__ = "Noam Keidar"
+__author__ = "YY Lab AI"
+__copyright__ = "YY Lab AI"
 __license__ = "MIT"
 
 _logger = logging.getLogger(__name__)
