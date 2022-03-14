@@ -1,9 +1,9 @@
 from abc import ABC
 from typing import Dict
 
-from epilepsy.apis.data import Sample, Signal
-from epilepsy.names import LabelType, NonSignalDataType, SignalType
-from torch import Tensor
+from physlearn.apis.data import Sample, Signal
+from physlearn.names import LabelType, NonSignalDataType, SignalType
+from physlearn.typing import Array
 
 
 class Processor(ABC):
@@ -61,10 +61,10 @@ class Processor(ABC):
         return signals
 
     def _process_data(
-        self, data: Dict[NonSignalDataType, Tensor], **kwargs
-    ) -> Dict[NonSignalDataType, Tensor]:
+        self, data: Dict[NonSignalDataType, Array], **kwargs
+    ) -> Dict[NonSignalDataType, Array]:
         """Processes data
-        Processes a dict of data tensors and returns a dict of processed data.
+        Processes a dict of data Arrays and returns a dict of processed data.
 
         Args:
             data: Data to process
@@ -72,8 +72,8 @@ class Processor(ABC):
         return data
 
     def _process_label(
-        self, label: Dict[LabelType, Tensor], **kwargs
-    ) -> Dict[LabelType, Tensor]:
+        self, label: Dict[LabelType, Array], **kwargs
+    ) -> Dict[LabelType, Array]:
         """Transforms labels
 
         Args:
@@ -83,7 +83,7 @@ class Processor(ABC):
 
     def _extract_features(
         self, signals: Dict[SignalType, Signal], **kwargs
-    ) -> Dict[NonSignalDataType, Tensor]:
+    ) -> Dict[NonSignalDataType, Array]:
         """Extracts features
 
         Extracts features from a collection of signals.

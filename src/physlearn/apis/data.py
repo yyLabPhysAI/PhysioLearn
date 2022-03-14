@@ -1,10 +1,10 @@
 from datetime import timedelta
 from typing import Any, Dict, Optional, Sequence
 
-import torch
-from torch import Tensor
+import numpy as np
 
 from physlearn.names import DataBaseName, LabelType, NonSignalDataType, SignalType
+from physlearn.typing import Array
 from physlearn.utils import find_val_in_list
 
 
@@ -28,8 +28,8 @@ class Signal:
         self,
         start_time: timedelta,
         end_time: timedelta,
-        time_axis: Tensor,
-        signal: Tensor,
+        time_axis: Array,
+        signal: Array,
         signal_type: SignalType,
         channel_names: Optional[Sequence[str]] = None,
     ):
@@ -71,12 +71,12 @@ class Signal:
     @property
     def time_axis(self):
         """ """
-        return self._time_axis.clone()
+        return self._time_axis.copy()
 
     @property
     def signal(self):
         """ """
-        return self._signal.clone()
+        return self._signal.copy()
 
     @property
     def signal_type(self):
@@ -119,8 +119,8 @@ class Signal:
         return bool(
             self.start_time == other.start_time
             and self.end_time == other.end_time
-            and torch.equal(self.time_axis, other.time_axis)
-            and torch.equal(self.signal, other.signal)
+            and np.equal(self.time_axis, other.time_axis)
+            and np.equal(self.signal, other.signal)
             and self.signal_type == other.signal_type
         )
 
@@ -150,8 +150,8 @@ class Signal:
         self,
         start_time: timedelta = None,
         end_time: timedelta = None,
-        time_axis: Tensor = None,
-        signal: Tensor = None,
+        time_axis: Array = None,
+        signal: Array = None,
         signal_type: SignalType = None,
         channel_names: Optional[Sequence[str]] = None,
     ):
@@ -194,9 +194,9 @@ class Sample:
         sample_id: Optional[int] = None,
         time: Optional[timedelta] = None,
         signals: Optional[Dict[SignalType, Signal]] = None,
-        data: Optional[Dict[NonSignalDataType, Tensor]] = None,
+        data: Optional[Dict[NonSignalDataType, Array]] = None,
         metadata: Optional[Dict[NonSignalDataType, Any]] = None,
-        label: Dict[LabelType, Tensor] = None,
+        label: Dict[LabelType, Array] = None,
         record_id: Optional[int] = None,
         **kwargs,
     ):
@@ -276,9 +276,9 @@ class Sample:
         sample_id: int,
         time: timedelta,
         signals: Dict[SignalType, Signal],
-        data: Dict[NonSignalDataType, Tensor],
+        data: Dict[NonSignalDataType, Array],
         metadata: Dict[NonSignalDataType, Any],
-        label: Dict[LabelType, Tensor],
+        label: Dict[LabelType, Array],
     ):
         """
         Args:
@@ -338,7 +338,7 @@ class Sample:
         )
 
 
-def compare_tensor_dict(d1: Dict[Any, Tensor], d2: Dict[Any, Tensor]):
+def compare_tensor_dict(d1: Dict[Any, Array], d2: Dict[Any, Array]):
     """Compare two dictionaries of tensors
 
     Args:
@@ -352,6 +352,6 @@ def compare_tensor_dict(d1: Dict[Any, Tensor], d2: Dict[Any, Tensor]):
         return True
 
     return (
-        all([torch.equal(t1, t2) for t1, t2 in zip(d1.values(), d2.values())])
+        all([np.equal(t1, t2) for t1, t2 in zip(d1.values(), d2.values())])
         and d1.keys() == d2.keys()
     )
