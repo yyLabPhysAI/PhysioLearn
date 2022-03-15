@@ -8,7 +8,8 @@ from typing import Callable, Sequence, Union
 import _pickle as pickle
 import h5py
 import numpy as np
-from epilepsy.names import HospitalName
+
+from physlearn.names import HospitalName
 
 SIGNATURE_FILE_SUFFIX = ".sign"
 SIGN_DELIMITER = ":"
