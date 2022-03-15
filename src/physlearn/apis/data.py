@@ -195,7 +195,6 @@ class Sample:
         patient_id: int,
         record_id: int,
         sample_id: int,
-        time: timedelta,
         signals: Dict[SignalType, Signal],
         data: Dict[NonSignalDataType, Array],
         metadata: Dict[NonSignalDataType, Any],
@@ -208,9 +207,6 @@ class Sample:
             patient_id:  ID of the patient the sample is taken from in the database
             record_id: ID of the record within the patient
             sample_id:  ID of the sample within the record
-            time: The time from the beginning of the record until the end of the
-            sample. Used to represent the time when the information contained in the
-            Sample is available under real-time settings.
             signals: Signal data of the sample as a dictionary with the structure:
                 signals = {
                             signal_type1: signal1,
@@ -232,7 +228,6 @@ class Sample:
         self._patient_id = patient_id
         self._record_id = record_id
         self._sample_id = sample_id
-        self._time = time
         self._signals = signals
         self._data = data
         self._metadata = metadata
@@ -248,11 +243,10 @@ class Sample:
         db_version: Optional[str] = None,
         patient_id: Optional[int] = None,
         sample_id: Optional[int] = None,
-        time: Optional[timedelta] = None,
         signals: Optional[Dict[SignalType, Signal]] = None,
         data: Optional[Dict[NonSignalDataType, Array]] = None,
         metadata: Optional[Dict[NonSignalDataType, Any]] = None,
-        label: Dict[LabelType, Array] = None,
+        label: Optional[Dict[LabelType, Array]] = None,
         record_id: Optional[int] = None,
         **kwargs,
     ):
@@ -263,7 +257,6 @@ class Sample:
         db_version = db_version if db_version else self.db_version
         patient_id = patient_id if patient_id else self.patient_id
         sample_id = sample_id if sample_id else self.sample_id
-        time = time if time else self.time
         signals = signals if signals else self.signals
         data = data if data else self.data
         metadata = metadata if metadata else self.metadata
@@ -276,7 +269,6 @@ class Sample:
             patient_id=patient_id,
             record_id=record_id,
             sample_id=sample_id,
-            time=time,
             signals=signals,
             data=data,
             metadata=metadata,
@@ -302,11 +294,6 @@ class Sample:
     def sample_id(self):
         """ """
         return self._sample_id
-
-    @property
-    def time(self):
-        """ """
-        return self._time
 
     @property
     def signals(self):
