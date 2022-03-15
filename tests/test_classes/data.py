@@ -1,9 +1,10 @@
 from datetime import timedelta
 from typing import Any, Dict, Sequence, Tuple, Union
 
+import numpy as np
 import torch
-from numpy.random import randint
-from torch import linspace, randn
+from numpy import linspace
+from numpy.random import randint, randn
 
 from physlearn.apis.data import Sample, Signal
 from physlearn.apis.data_loading import DataSource
@@ -39,7 +40,7 @@ class FakeDataSource(DataSource):
                         end_time=timedelta(t + dt),
                         signal=randn(1, 200),
                         signal_type=SignalType.FAKE,
-                        time_axis=linspace(t, t + dt, 200).unsqueeze(dim=0),
+                        time_axis=np.expand_dims(linspace(t, t + dt, 200), axis=0),
                     )
                     samp = Sample(
                         self.name,

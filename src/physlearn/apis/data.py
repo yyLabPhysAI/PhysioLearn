@@ -1,8 +1,6 @@
 from datetime import timedelta
 from typing import Any, Dict, Optional, Sequence
 
-import numpy as np
-
 from physlearn.names import DataBaseName, LabelType, NonSignalDataType, SignalType
 from physlearn.typing import Array
 from physlearn.utils import find_val_in_list
@@ -96,11 +94,11 @@ class Signal:
         return self._num_channels
 
     def get_num_channels(self):
-        return self.signal.size()[0]
+        return self.signal.shape[0]
 
     def check_dimensions(self):
         """Signals can either be of the same length as the time axis or empty"""
-        if not self.signal.numel():
+        if not self.signal.size:
             return
         elif self.signal.shape[1] == self.time_axis.shape[1]:
             return
@@ -119,8 +117,8 @@ class Signal:
         return bool(
             self.start_time == other.start_time
             and self.end_time == other.end_time
-            and np.equal(self.time_axis, other.time_axis)
-            and np.equal(self.signal, other.signal)
+            and (self.time_axis == other.time_axis).all()
+            and (self.signal == other.signal).all()
             and self.signal_type == other.signal_type
         )
 
@@ -352,6 +350,6 @@ def compare_tensor_dict(d1: Dict[Any, Array], d2: Dict[Any, Array]):
         return True
 
     return (
-        all([np.equal(t1, t2) for t1, t2 in zip(d1.values(), d2.values())])
+        all([(t1 == t2).all() for t1, t2 in zip(d1.values(), d2.values())])
         and d1.keys() == d2.keys()
     )
