@@ -17,10 +17,10 @@ class BatchMetric(ABC):
         self, y: Dict[LabelType, Tensor], y_pred: Dict[LabelType, Tensor]
     ) -> float:
         with torch.no_grad():
-            return self._metric(y, y_pred)
+            return self._calculate_metric(y, y_pred)
 
     @abstractmethod
-    def _metric(
+    def _calculate_metric(
         self, y: Dict[LabelType, Tensor], y_pred: Dict[LabelType, Tensor]
     ) -> float:
         """
@@ -56,12 +56,12 @@ class EpochMetric:
                     raise IndexError(
                         f"Metric {metric_type.value} is missing in a batch"
                     )
-        return self._metric(batch_results)
+        return self._calculate_metric(batch_results)
 
     @abstractmethod
-    def _metric(self, batch_results: Sequence[BatchResult]) -> float:
+    def _calculate_metric(self, batch_results: Sequence[BatchResult]) -> float:
         """
-        Implements tha metric itself in concrete classes.
+        Implements tha metric calculation  itself in concrete classes.
 
         Args:
             batch_results: Batch results to aggregate from

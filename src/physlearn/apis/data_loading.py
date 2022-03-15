@@ -47,8 +47,8 @@ class DataSource(ABC):
     This allows samples to be attributed to a record which correspond to a specific
     hospital visit in the real world.
 
-    Notes:
-        1. The term sample may mean different things in specific kinds of data, always
+    Note:
+        The term sample may mean different things in specific kinds of data, always
         refer to the docs of the concrete source to understand the meaning in the
         specific context.
     """

@@ -3,7 +3,6 @@ from typing import Any, Dict, Optional, Sequence
 
 from physlearn.names import DataBaseName, LabelType, NonSignalDataType, SignalType
 from physlearn.typing import Array
-from physlearn.utils import find_val_in_list
 
 
 class Signal:
@@ -55,6 +54,13 @@ class Signal:
         self.check_dimensions()
         self.check_times()
         self._check_num_channels()
+
+    def __getitem__(self, idx):
+        """
+        Syntactic sugar, allows getting data from a Signal object like:
+        >>> signal[1:2, :1000]
+        """
+        return self.signal[idx].copy()
 
     @property
     def start_time(self):
@@ -142,7 +148,9 @@ class Signal:
                 f"Channel {desired_channel_name} not found" f"in channel names"
             )
         else:
-            return find_val_in_list(self.channel_names, desired_channel_name)
+            return tuple(
+                i for i, e in enumerate(self.channel_names) if e == desired_channel_name
+            )
 
     def signal_like_this(
         self,
@@ -179,6 +187,56 @@ class Sample:
     A single sample from a single patient from a single database.
     May include a full or a partial recording.
     """
+
+    def __init__(
+        self,
+        db: DataBaseName,
+        db_version: str,
+        patient_id: int,
+        record_id: int,
+        sample_id: int,
+        time: timedelta,
+        signals: Dict[SignalType, Signal],
+        data: Dict[NonSignalDataType, Array],
+        metadata: Dict[NonSignalDataType, Any],
+        label: Dict[LabelType, Array],
+    ):
+        """
+        Args:
+            db:  Name of the database the sample is taken from
+            db_version:  Version of the database the sample is taken from
+            patient_id:  ID of the patient the sample is taken from in the database
+            record_id: ID of the record within the patient
+            sample_id:  ID of the sample within the record
+            time: The time from the beginning of the record until the end of the
+            sample. Used to represent the time when the information contained in the
+            Sample is available under real-time settings.
+            signals: Signal data of the sample as a dictionary with the structure:
+                signals = {
+                            signal_type1: signal1,
+                            signal_type2: signal2,
+                              ...
+                              }
+            data: Non-signal data as tensors (clinical, socioeconomic, etc.)
+            metadata: Non-signal data (clinical, socioeconomic, etc.)
+            label: The label of the sample for a specific supervised learning task
+
+            Note:
+                `data` and `metadata` may look alike but they are used for completely
+                 different purposes. `data` contains tensors, ready to be used as
+                 features for ML models while `metadata` is unstructured and used for
+                 internal operations of the system like labeling.
+        """
+        self._db = db
+        self._db_version = db_version
+        self._patient_id = patient_id
+        self._record_id = record_id
+        self._sample_id = sample_id
+        self._time = time
+        self._signals = signals
+        self._data = data
+        self._metadata = metadata
+        self._label = label
 
     @property
     def record_id(self):
@@ -264,56 +322,6 @@ class Sample:
     def metadata(self):
         """ """
         return self._metadata
-
-    def __init__(
-        self,
-        db: DataBaseName,
-        db_version: str,
-        patient_id: int,
-        record_id: int,
-        sample_id: int,
-        time: timedelta,
-        signals: Dict[SignalType, Signal],
-        data: Dict[NonSignalDataType, Array],
-        metadata: Dict[NonSignalDataType, Any],
-        label: Dict[LabelType, Array],
-    ):
-        """
-        Args:
-            db:  Name of the database the sample is taken from
-            db_version:  Version of the database the sample is taken from
-            patient_id:  ID of the patient the sample is taken from in the database
-            record_id: ID of the record within the patient
-            sample_id:  ID of the sample within the record
-            time: The time from the beginning of the record until the end of the
-            sample. Used to represent the time when the information contained in the
-            Sample is available under real-time settings.
-            signals: Signal data of the sample as a dictionary with the structure:
-                signals = {
-                            signal_type1: signal1,
-                            signal_type2: signal2,
-                              ...
-                              }
-            data: Non-signal data as tensors (clinical, socioeconomic, etc.)
-            metadata: Non-signal data (clinical, socioeconomic, etc.)
-            label: The label of the sample for a specific supervised learning task
-
-            Note:
-                `data` and `metadata` may look alike but they are used for completely
-                 different purposes. `data` contains tensors, ready to be used as
-                 features for ML models while `metadata` is unstructured and used for
-                 internal operations of the system like labeling.
-        """
-        self._db = db
-        self._db_version = db_version
-        self._patient_id = patient_id
-        self._record_id = record_id
-        self._sample_id = sample_id
-        self._time = time
-        self._signals = signals
-        self._data = data
-        self._metadata = metadata
-        self._label = label
 
     @property
     def label(self):

@@ -48,6 +48,9 @@ class TestSignal:
                 signal_type=example_signal.signal_type,
             )
 
+    def test_getitem(self, example_signal):
+        assert (example_signal.signal == example_signal[:, :]).all()
+
     def test_comparison(self, example_signal):
         equal_sig = Signal(
             start_time=example_signal.start_time,

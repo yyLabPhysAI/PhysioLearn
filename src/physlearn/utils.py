@@ -3,7 +3,7 @@ from hashlib import md5
 from logging import getLogger
 from pathlib import Path
 from time import time
-from typing import Callable, Sequence, Union
+from typing import Callable, Union
 
 import _pickle as pickle
 import h5py
@@ -39,21 +39,6 @@ def create_time_axis(start: datetime, length: int, dt: timedelta) -> np.ndarray:
     return time_axis
 
 
-def find_val_in_list(my_list: Sequence, value):
-    """
-    Finds a value in a given list.
-
-    Args:
-      my_list: a Sequence to search in
-      value: to search for in the given list
-
-      Returns:
-           all indices of a given value in a given list.
-
-    """
-    return tuple(i for i, e in enumerate(my_list) if e == value)
-
-
 def find_files_with_extension(extension: str, files_path: Path):
     """
     Finds files recursively from the current path with the given extension.
@@ -66,26 +51,7 @@ def find_files_with_extension(extension: str, files_path: Path):
       files: a list of file paths (str) with the extension
 
     """
-    files = []
-    for file in Path(files_path).glob("**/*." + extension):
-        files.append(file)
-    return files
-
-
-def remove_duplicates_in_list(my_list: list):
-    """
-    Remove duplicates in a given list.
-
-    Args:
-      my_list: input list with duplicates
-
-    Returns:
-      my_list: the given list without duplicates.
-
-    """
-    if my_list is None:
-        return my_list
-    return list(set(my_list))
+    return list(Path(files_path).glob("**/*." + extension))
 
 
 def find_elements_by_condition(my_list: list, condition: Callable):
@@ -115,27 +81,6 @@ def check_hdf5_file_validity(path):
         raise ValueError("The given path is not an hdf5 file")
 
 
-def datetime_into_float(
-    absolute_time: datetime, relative_start_time: datetime
-) -> float:
-    """
-    Converts a datetime object of some event into a float object indicating
-    the number of seconds from the time of the event to another relative start time.
-
-    Args:
-      absolute_time: datetime object indicating absolute date and time of an event.
-      relative_start_time: the time of the event should be converted to the
-    number of seconds from the given relative start time.
-
-    Returns:
-        relative_time: float: time difference between absolute time of the event
-    to the relative start time, in seconds.
-
-    """
-    relative_time = (absolute_time - relative_start_time).total_seconds()
-    return relative_time
-
-
 def find_digits_in_str(string: str) -> str:
     """Find digits in a given string.
 
@@ -146,8 +91,7 @@ def find_digits_in_str(string: str) -> str:
       digits: str, found in the given string
 
     """
-    digits = "".join(x for x in string if x.isdigit())
-    return digits
+    return "".join(x for x in string if x.isdigit())
 
 
 def assert_hospital(hospital_in: HospitalName, hospital_check: HospitalName):
@@ -168,7 +112,7 @@ def assert_hospital(hospital_in: HospitalName, hospital_check: HospitalName):
         raise ValueError(msg)
 
 
-def bytes2str(value: Union[str, bytes]):
+def bytes2str(value: Union[str, bytes]) -> str:
     """
     Converts bytes argument to a string if needed
 
