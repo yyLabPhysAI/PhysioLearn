@@ -48,7 +48,6 @@ class FakeDataSource(DataSource):
                         patient_id=patient_id,
                         record_id=record_id,
                         sample_id=sample_id,
-                        time=timedelta(t + dt),
                         signals={SignalType.FAKE: sig},
                         data={k: torch.rand(7) for k in self.feature_types},
                         metadata=None,

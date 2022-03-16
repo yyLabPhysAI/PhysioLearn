@@ -323,7 +323,6 @@ class Sample:
                 self.patient_id == other.patient_id,
                 self.record_id == other.record_id,
                 self.sample_id == other.sample_id,
-                self.time == other.time,
                 self.signals == other.signals,
                 compare_tensor_dict(self.data, other.data),
                 compare_tensor_dict(self.label, other.label),
