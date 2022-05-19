@@ -3,7 +3,7 @@ from hashlib import md5
 from logging import getLogger
 from pathlib import Path
 from time import time
-from typing import Callable, Union
+from typing import Union
 
 import _pickle as pickle
 import h5py
@@ -52,22 +52,6 @@ def find_files_with_extension(extension: str, files_path: Path):
 
     """
     return list(Path(files_path).glob("**/*." + extension))
-
-
-def find_elements_by_condition(my_list: list, condition: Callable):
-    """
-    Find elements in a list with a given condition.
-
-    Args:
-      my_list: input list
-      condition: condition elements fill
-
-    Returns:
-      elements: list of elements in the given list that fulfill the condition
-
-    """
-    elements = [my_list[i] for i, element in enumerate(my_list) if condition(element)]
-    return elements
 
 
 def check_hdf5_file_validity(path):
