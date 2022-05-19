@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: install micromamba
         run: |
-          wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj bin/micromamba --strip-components=1
+          wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/0.19.1 | tar -xvj bin/micromamba --strip-components=1
           ./micromamba shell init -s bash -p ~/micromamba
           mkdir -p ~/micromamba/pkgs/
       - name: Cache env
